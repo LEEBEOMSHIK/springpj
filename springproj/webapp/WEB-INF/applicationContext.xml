@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd    http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd    http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd    http://www.springframework.org/schema/jee
+http://www.springframework.org/schema/jee/spring-jee.xsd    http://www.springframework.org/schema/lang
+http://www.springframework.org/schema/lang/spring-lang.xs    http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd    http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util.xsd    http://www.springframework.org/schema/task
+http://www.springframework.org/schema/task/spring-task.xsd">
+<context:annotation-config />
+
+	<context:component-scan
+		base-package="com.springproj.repository,com.springproj.service">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Component" />
+	</context:component-scan>
+	<!-- repository, service 패키지 안에 아래의 파일들(Repository, Service, Component 어노테이션이 달린 클래스들)을 찾아서 실행하겠다는 의미 -->
+	
+	<!-- MyBatis DB 연결할 수 있도록 설정하여 bean 등록 -->
+	<bean id="dataSource"		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"		value="com.mysql.jdbc.Driver" />
+		<property name="url"		value="jdbc:mysql://localhost:3306/board2" />
+		<property name="username" value="root" />
+		<property name="password" value="0000" />
+	</bean>
+
+	<!-- 위의 dataSource를 통해  sqlSessionFactory 생성 -->
+	<bean id="sqlSessionFactory"	class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" 	value="classpath:mybatis/configuration.xml" />
+		<property name="mapperLocations" value="classpath:mappers/boardMapper.xml"/>
+	</bean>
+
+	<!-- 위의 sqlSessionFactory를 통해 sqlSession 생성 -->
+	<bean id="sqlSession"	class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" /> <!-- 생성자를 부름 -->
+	</bean>
+	
+	<!-- 위의 세 bean들은 서로 연결되어 있음! -->
+	
+</beans>

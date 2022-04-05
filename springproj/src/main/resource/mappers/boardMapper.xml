@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardMapper">
+
+	<select id="boardList" resultType="boardDTO">
+		SELECT * FROM board_data
+	</select>
+	
+	<insert id="boardInsert" parameterType="boardDTO">
+		INSERT INTO board_data VALUES (null, #{name}, #{pw}, #{content}, DATE_FORMAT(NOW(), '%Y-%m-%d'))
+	</insert>
+	
+	<delete id="boardDelete" parameterType="boardDTO">
+		DELETE FROM board_data WHERE no = #{no} and pw = #{pw}
+	</delete>
+</mapper>
